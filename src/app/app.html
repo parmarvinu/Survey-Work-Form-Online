@@ -1,0 +1,405 @@
+<div class="min-h-screen bg-gray-100 pb-20 font-sans">
+  <!-- Header Section -->
+  <header class="bg-blue-600 text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button class="p-2 hover:bg-blue-700 rounded-full transition-colors flex items-center justify-center">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <h1 class="text-xl font-semibold tracking-tight">Survey Work Form Online</h1>
+          <p class="text-blue-100 text-sm">SPRC Research & Consulting Pvt. Ltd.</p>
+        </div>
+      </div>
+      <div>
+        @if (isAdminLoggedIn()) {
+          <button (click)="isAdminLoggedIn.set(false)" class="text-sm bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+            <mat-icon class="text-sm h-4 w-4 leading-4">logout</mat-icon>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+        } @else {
+          <button (click)="showLoginModal.set(true)" class="text-sm bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+            <mat-icon class="text-sm h-4 w-4 leading-4">admin_panel_settings</mat-icon>
+            <span class="hidden sm:inline">Admin</span>
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  @if (!isAdminLoggedIn()) {
+  <main class="max-w-3xl mx-auto px-4 pt-6">
+    <p class="text-red-500 text-sm font-medium mb-4 ml-1">* Indicates required question</p>
+
+    <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <!-- 2. Location Section -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-blue-50/50 px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+          <mat-icon class="text-blue-600">location_on</mat-icon>
+          <h2 class="text-lg font-semibold text-gray-800">Location Details</h2>
+        </div>
+        <div class="p-6 space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">State Name <span class="text-red-500">*</span></label>
+            <app-searchable-select formControlName="stateCode" [options]="states" placeholder="Select State"></app-searchable-select>
+            @if (isFieldInvalid('stateCode')) { <p class="text-red-500 text-xs mt-1">State is required</p> }
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">District Name <span class="text-red-500">*</span></label>
+            <app-searchable-select formControlName="districtName" [options]="districts()" [allowCustom]="true" placeholder="Select District or type to add"></app-searchable-select>
+            @if (isFieldInvalid('districtName')) { <p class="text-red-500 text-xs mt-1">District is required</p> }
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Assembly Name <span class="text-red-500">*</span></label>
+            <app-searchable-select formControlName="assemblyName" [options]="assemblies()" [allowCustom]="true" placeholder="Select Assembly or type to add"></app-searchable-select>
+            @if (isFieldInvalid('assemblyName')) { <p class="text-red-500 text-xs mt-1">Assembly is required</p> }
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Polling Booth Number <span class="text-red-500">*</span></label>
+            <app-searchable-select formControlName="pollingBooth" [options]="pollingBooths()" [allowCustom]="true" placeholder="Select Polling Booth or type to add"></app-searchable-select>
+            @if (isFieldInvalid('pollingBooth')) { <p class="text-red-500 text-xs mt-1">Polling Booth is required</p> }
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Area / Address <span class="text-red-500">*</span></label>
+            <app-searchable-select formControlName="area" [options]="areas()" [allowCustom]="true" placeholder="Select Area or type to add"></app-searchable-select>
+            @if (isFieldInvalid('area')) { <p class="text-red-500 text-xs mt-1">Area is required</p> }
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Respondent Bio Data -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-blue-50/50 px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+          <mat-icon class="text-blue-600">badge</mat-icon>
+          <h2 class="text-lg font-semibold text-gray-800">Respondent Bio Data</h2>
+        </div>
+        <div class="p-6 space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Surveyor ID <span class="text-red-500">*</span></label>
+              <input type="text" formControlName="surveyorId" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Enter ID">
+              @if (isFieldInvalid('surveyorId')) { <p class="text-red-500 text-xs mt-1">Surveyor ID is required</p> }
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Surveyor Name <span class="text-red-500">*</span></label>
+              <input type="text" formControlName="surveyorName" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Enter Name">
+              @if (isFieldInvalid('surveyorName')) { <p class="text-red-500 text-xs mt-1">Surveyor Name is required</p> }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Serial Number</label>
+              <input type="text" formControlName="serialNumber" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Optional">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">VSN ID</label>
+              <input type="text" formControlName="vsnId" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Optional">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Voter ID Number</label>
+              <input type="text" formControlName="voterId" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Optional">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">House Number</label>
+              <input type="text" formControlName="houseNumber" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Optional">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Voter Serial Number</label>
+              <input type="text" formControlName="voterSerialNumber" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Optional">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Respondent Name <span class="text-red-500">*</span></label>
+              <input type="text" formControlName="respondentName" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Enter Name">
+              @if (isFieldInvalid('respondentName')) { <p class="text-red-500 text-xs mt-1">Respondent Name is required</p> }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Personal Information -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-blue-50/50 px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+          <mat-icon class="text-blue-600">person</mat-icon>
+          <h2 class="text-lg font-semibold text-gray-800">Personal Information</h2>
+        </div>
+        <div class="p-6 space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Category <span class="text-red-500">*</span></label>
+              <app-searchable-select formControlName="category" [options]="categories" placeholder="Select Category"></app-searchable-select>
+              @if (isFieldInvalid('category')) { <p class="text-red-500 text-xs mt-1">Category is required</p> }
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Gender <span class="text-red-500">*</span></label>
+              <app-searchable-select formControlName="gender" [options]="genders" placeholder="Select Gender"></app-searchable-select>
+              @if (isFieldInvalid('gender')) { <p class="text-red-500 text-xs mt-1">Gender is required</p> }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Occupation <span class="text-red-500">*</span></label>
+              <app-searchable-select formControlName="occupation" [options]="occupations" placeholder="Select Occupation"></app-searchable-select>
+              @if (isFieldInvalid('occupation')) { <p class="text-red-500 text-xs mt-1">Occupation is required</p> }
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Education Qualification <span class="text-red-500">*</span></label>
+              <app-searchable-select formControlName="education" [options]="educations" placeholder="Select Education"></app-searchable-select>
+              @if (isFieldInvalid('education')) { <p class="text-red-500 text-xs mt-1">Education is required</p> }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Age Group <span class="text-red-500">*</span></label>
+              <app-searchable-select formControlName="ageGroup" [options]="ageGroups" placeholder="Select Age Group"></app-searchable-select>
+              @if (isFieldInvalid('ageGroup')) { <p class="text-red-500 text-xs mt-1">Age Group is required</p> }
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Contact Number <span class="text-red-500">*</span></label>
+              <input type="tel" formControlName="contactNumber" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="10-digit number" maxlength="10">
+              @if (isFieldInvalid('contactNumber')) { 
+                <p class="text-red-500 text-xs mt-1">Valid 10-digit contact number is required</p> 
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Survey Questions -->
+      <div class="space-y-6">
+        <h2 class="text-xl font-bold text-gray-800 px-2 flex items-center gap-2">
+          <mat-icon class="text-blue-600">assignment</mat-icon>
+          Survey Questionnaire
+        </h2>
+
+        <!-- Q1 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">1. Major issue in your area? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">आपके क्षेत्र में प्रमुख समस्या क्या है?</p>
+          <app-searchable-select formControlName="majorIssue" [options]="issues" placeholder="Select Issue"></app-searchable-select>
+          @if (isFieldInvalid('majorIssue')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q2 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">2. Opinion on Central Government? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">केंद्र सरकार पर आपकी क्या राय है?</p>
+          <app-searchable-select formControlName="opinionCentral" [options]="opinions" placeholder="Select Opinion"></app-searchable-select>
+          @if (isFieldInvalid('opinionCentral')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q3 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">3. Opinion on State Government? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">राज्य सरकार पर आपकी क्या राय है?</p>
+          <app-searchable-select formControlName="opinionState" [options]="opinions" placeholder="Select Opinion"></app-searchable-select>
+          @if (isFieldInvalid('opinionState')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q4 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">4. Opinion on current MLA? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">वर्तमान विधायक पर आपकी क्या राय है?</p>
+          <app-searchable-select formControlName="opinionMLA" [options]="opinions" placeholder="Select Opinion"></app-searchable-select>
+          @if (isFieldInvalid('opinionMLA')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q5 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">5. Reason for dissatisfaction (if any)?</label>
+          <p class="text-sm text-gray-500 mb-4">असंतोष का कारण (यदि कोई हो)?</p>
+          <input type="text" formControlName="reasonDissatisfaction" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Type reason here...">
+        </div>
+
+        <!-- Q6 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">6. Candidate religion preference? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">क्या उम्मीदवार का धर्म आपके लिए मायने रखता है?</p>
+          <app-searchable-select formControlName="candidateReligion" [options]="yesNo" placeholder="Select Yes/No"></app-searchable-select>
+          @if (isFieldInvalid('candidateReligion')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q6A -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">6A. Candidate selection preference?</label>
+          <p class="text-sm text-gray-500 mb-4">उम्मीदवार चयन प्राथमिकता?</p>
+          <input type="text" formControlName="candidateSelection" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Type preference here...">
+        </div>
+
+        <!-- Q7 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">7. Voting basis? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">मतदान का आधार क्या होगा?</p>
+          <app-searchable-select formControlName="votingBasis" [options]="votingBases" placeholder="Select Basis"></app-searchable-select>
+          @if (isFieldInvalid('votingBasis')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q8 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">8. Preferred party? <span class="text-red-500">*</span></label>
+          <p class="text-sm text-gray-500 mb-4">पसंदीदा पार्टी कौन सी है?</p>
+          <app-searchable-select formControlName="preferredParty" [options]="parties" placeholder="Select Party"></app-searchable-select>
+          @if (isFieldInvalid('preferredParty')) { <p class="text-red-500 text-xs mt-1">This field is required</p> }
+        </div>
+
+        <!-- Q9 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">9. Preferred MLA Candidate?</label>
+          <p class="text-sm text-gray-500 mb-4">पसंदीदा विधायक उम्मीदवार का नाम?</p>
+          <input type="text" formControlName="preferredMLA" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Type candidate name...">
+        </div>
+
+        <!-- Q10 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <label class="block text-base font-semibold text-gray-800 mb-1">10. Development work needed?</label>
+          <p class="text-sm text-gray-500 mb-4">क्षेत्र में कौन से विकास कार्य की आवश्यकता है?</p>
+          <textarea formControlName="developmentNeeds" rows="4" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-y" placeholder="Describe the development needs..."></textarea>
+        </div>
+      </div>
+
+      <!-- 6. Action Buttons -->
+      <div class="pt-4 pb-8 flex flex-col sm:flex-row gap-4">
+        <button 
+          type="submit" 
+          [disabled]="isSubmitting()"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          @if (isSubmitting()) {
+            <mat-icon class="animate-spin">autorenew</mat-icon>
+            Submitting...
+          } @else {
+            <mat-icon>check_circle</mat-icon>
+            Submit Survey
+          }
+        </button>
+        <button 
+          type="button" 
+          (click)="onClear()"
+          [disabled]="isSubmitting()"
+          class="sm:w-1/3 bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3.5 px-6 rounded-xl border border-gray-300 shadow-sm transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          <mat-icon>clear</mat-icon>
+          Clear Form
+        </button>
+      </div>
+      
+      <!-- Success Message -->
+      @if (submitSuccess()) {
+        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 animate-fade-in-up z-50">
+          <mat-icon>check_circle</mat-icon>
+          <span class="font-medium">Survey submitted successfully!</span>
+        </div>
+      }
+    </form>
+  </main>
+  } @else {
+    <main class="max-w-6xl mx-auto px-4 py-6 animate-fade-in-up">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+          <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <mat-icon>dashboard</mat-icon>
+            Submitted Surveys
+          </h2>
+          <div class="flex items-center gap-3">
+            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">{{ submittedSurveys().length }} Records</span>
+            <button (click)="downloadExcel()" [disabled]="submittedSurveys().length === 0" class="text-sm bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+              <mat-icon class="text-sm h-4 w-4 leading-4">download</mat-icon>
+              <span class="hidden sm:inline">Export CSV</span>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
+                <th class="px-4 py-3 font-medium">Date</th>
+                <th class="px-4 py-3 font-medium">Respondent</th>
+                <th class="px-4 py-3 font-medium">Contact</th>
+                <th class="px-4 py-3 font-medium">Location</th>
+                <th class="px-4 py-3 font-medium">Major Issue</th>
+                <th class="px-4 py-3 font-medium">Preferred Party</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (survey of submittedSurveys(); track survey.id) {
+                <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">
+                  <td class="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{{ survey.timestamp | date:'short' }}</td>
+                  <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ survey.respondentName }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ survey.contactNumber }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ survey.districtName }}, {{ survey.stateCode }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ survey.majorIssue }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                      {{ survey.preferredParty }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                    <div class="flex flex-col items-center justify-center gap-3">
+                      <div class="bg-gray-100 p-3 rounded-full">
+                        <mat-icon class="text-gray-400 text-3xl h-8 w-8 leading-8">inbox</mat-icon>
+                      </div>
+                      <p class="text-base">No survey records found.</p>
+                      <p class="text-sm text-gray-400">Submit a survey to see it appear here.</p>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  }
+
+  <!-- Login Modal -->
+  @if (showLoginModal()) {
+    <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-fade-in-up">
+        <div class="bg-blue-600 px-6 py-4 flex items-center justify-between text-white">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Admin Login
+          </h2>
+          <button type="button" (click)="showLoginModal.set(false)" class="hover:bg-blue-700 p-1 rounded-full transition-colors flex items-center justify-center">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="p-6 space-y-4">
+          @if (loginError()) {
+            <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm flex items-center gap-2">
+              <mat-icon class="text-sm h-4 w-4 leading-4">error</mat-icon>
+              {{ loginError() }}
+            </div>
+          }
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Admin ID</label>
+            <input type="text" formControlName="adminId" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Enter Admin ID">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" formControlName="password" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Enter Password">
+          </div>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition-colors mt-6">
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>
